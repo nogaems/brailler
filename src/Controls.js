@@ -12,8 +12,8 @@ const aspect_ratios = {
   // keeping in mind that a Braille pattern symbol is 2x4 dots,
   // that would result in an image of 60x64 pixels
   twitch: [60, 64],
-  // TODO: figure it out what's the value for youtube
-  youtube: [12, 24],
+  // same width, but only 200 characters
+  youtube: [60, 24],
   custom: [],
 };
 
