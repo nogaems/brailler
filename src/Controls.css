@@ -1,0 +1,16 @@
+.Controls {
+  min-height: calc(100vh - 100px);
+}
+
+p {
+  margin: 2px;
+}
+
+.crop {
+  float: left;
+  width: 50%;
+}
+
+pre {
+  margin: 0px;
+}
