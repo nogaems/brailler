@@ -6,9 +6,31 @@ p {
   margin: 2px;
 }
 
+.settings {
+  position: fixed;
+  top: 0px;
+  width: 10vw;
+  z-index: 999;
+}
+
 .crop {
-  float: left;
-  width: 50%;
+  min-width: 80vw;
+  max-width: 80vw;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 10vw;
+}
+
+.preview {
+  min-width: 80vw;
+  max-width: 80vw;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.result {
+  display: inline-block;
+  border: 1px;
 }
 
 pre {

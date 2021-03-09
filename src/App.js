@@ -13,6 +13,7 @@ const Footer = () => {
   const year = new Date().getFullYear();
   return (
     <footer>
+      <hr />
       &copy; Copyright {year} <strong>Not a Designer </strong>LLC.
     </footer>
   );

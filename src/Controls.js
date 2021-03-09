@@ -17,6 +17,11 @@ const aspect_ratios = {
   custom: [],
 };
 
+const symbol = {
+  width: 2,
+  height: 4,
+};
+
 const FilePicker = (props) => {
   const { settings, setSettings } = props;
 
@@ -104,8 +109,8 @@ const Settings = (props) => {
       !previewCanvasRef.current ||
       !imgRef.current ||
       !settings.configured ||
-      !completedCrop.width ||
-      !completedCrop.height
+      completedCrop.width < symbol.width ||
+      completedCrop.height < symbol.height
     ) {
       return;
     }
@@ -144,8 +149,8 @@ const Settings = (props) => {
         // because Braille patter symbols are of size 2x4,
         // width and height should be an integer multiply of
         // 2 and 4 respectively
-        width = cutDownSide(completedCrop.width, 2);
-        height = cutDownSide(completedCrop.height, 4);
+        width = cutDownSide(completedCrop.width, symbol.width);
+        height = cutDownSide(completedCrop.height, symbol.height);
       } else {
         width = aspect_ratios[type][0];
         height = aspect_ratios[type][1];
@@ -209,53 +214,59 @@ const Settings = (props) => {
           defaultChecked={type === Object.keys(aspect_ratios)[0]}
           onChange={(e) => onTypeChange(e)}
         />{" "}
-        {type}{" "}
+        {type} <br />
       </label>
     );
   }
 
   return (
-    <form id="settings">
-      <fieldset id="settings-fieldset">
-        <legend>Settings</legend>
-        {variants}
-        <br />
-        <label htmlFor="threshold">Threshold [1-99]: </label>
-        <input
-          key="threshold"
-          id="threshold"
-          type="number"
-          name="threshold"
-          min="1"
-          max="99"
-          defaultValue={settings.threshold}
-          onChange={(e) => onThresholdChange(e)}
-        />
-        <label htmlFor="edge">
-          <input
-            key="edge"
-            id="edge"
-            type="checkbox"
-            name="edge"
-            defaultValue={settings.detectEdges}
-            onChange={(e) => onEdgeChange(e)}
-          />
-          Detect edges
-        </label>
-        <label htmlFor="invert">
-          <input
-            key="invert"
-            id="invert"
-            type="checkbox"
-            name="invert"
-            defaultValue={settings.invertColors}
-            onChange={(e) => onInvertChange(e)}
-          />
-          Invert colors
-        </label>
-      </fieldset>
+    <>
+      <div className="settings">
+        <form id="settings">
+          <fieldset id="settings-fieldset">
+            <legend>Settings</legend>
+            {variants}
+            <br />
+            <label htmlFor="threshold">Threshold [1-99]: </label>
+            <input
+              key="threshold"
+              id="threshold"
+              type="range"
+              name="threshold"
+              min="1"
+              max="99"
+              defaultValue={settings.threshold}
+              onChange={(e) => onThresholdChange(e)}
+            />
+            <br />
+            <label htmlFor="edge">
+              <input
+                key="edge"
+                id="edge"
+                type="checkbox"
+                name="edge"
+                defaultValue={settings.detectEdges}
+                onChange={(e) => onEdgeChange(e)}
+              />
+              Detect edges
+            </label>
+            <br />
+            <label htmlFor="invert">
+              <input
+                key="invert"
+                id="invert"
+                type="checkbox"
+                name="invert"
+                defaultValue={settings.invertColors}
+                onChange={(e) => onInvertChange(e)}
+              />
+              Dark Mode
+            </label>
+          </fieldset>
+        </form>
+      </div>
       <div className="crop">
-        <p>Crop</p>
+        <p>Select an area to be rendered using your mouse:</p>
         <ReactCrop
           src={img}
           crop={crop}
@@ -265,7 +276,7 @@ const Settings = (props) => {
           onDragEnd={() => onCropCompleted()}
         />
       </div>
-    </form>
+    </>
   );
 };
 
@@ -312,9 +323,9 @@ const Result = (props) => {
   };
 
   let rows = [];
-  for (let y = 0; y <= height - 1; y += 4) {
+  for (let y = 0; y <= height - 1; y += symbol.height) {
     let line = "";
-    for (let x = 0; x <= width - 1; x += 2) {
+    for (let x = 0; x <= width - 1; x += symbol.width) {
       line += getSymbolAt(x, y);
     }
     rows.push(
@@ -326,9 +337,17 @@ const Result = (props) => {
   }
 
   return (
-    <div className="result">
-      <pre>{rows}</pre>
-    </div>
+    <>
+      <p>
+        {" "}
+        Make sure to start selection from the very first character right after
+        this string, even if it seems to be "empty"{" "}
+      </p>
+      <div className="result">
+        <pre>{rows}</pre>
+      </div>
+      <br />
+    </>
   );
 };
 
